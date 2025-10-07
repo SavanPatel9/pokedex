@@ -76,6 +76,7 @@ function Gallery({list} : PokedexProps) {
     (p, index) => p.name.toLowerCase().startsWith(searchTerm.toLowerCase()) || (index + 1).toString().startsWith(searchTerm)
   );
 
+  // eslint-disable-next-line
   const sortedPokemon = [...filteredPokemon].sort((a, b) => {
     const aDex = parseInt(getDexNum(a));
     const bDex = parseInt(getDexNum(b));
