@@ -1,0 +1,73 @@
+#gallery {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 10% 40% 40% 10%;
+    grid-template-rows: 15% 83% 2%;
+    grid-template-areas: 
+        "filters filters filters filters"
+        ". p-grid p-grid ."
+        ". . . .";
+
+    #filters {
+        grid-area: filters;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        #filteredCount {
+            position: relative;
+            left: -20px;
+        }
+
+        #typeFilters {
+            display: flex;
+            flex-direction: row;
+            justify-self: center;
+            align-items: center;
+        }
+    }
+
+    #poke-container {
+        grid-area: p-grid;
+
+        .poke-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 10px;
+            justify-items: center; 
+            align-items: center;
+            height: 100%;
+
+            .grid-item {
+                background-color: lightblue;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+        }
+
+        .gallery-button {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            background: transparent;
+            color: #8b949e;
+            border: none;
+            font-size: 2rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            z-index: 100;
+            border-radius: 50%;
+
+            &:hover {
+                color: lighten(#8b949e, 20%);
+            }
+
+            &.prev { left: 1rem; }
+            &.next { right: 1rem; }
+        }
+    }
+}
