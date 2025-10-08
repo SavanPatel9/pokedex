@@ -1,3 +1,6 @@
+$secondary-color: #f0f0f0;
+$button-color: #8b949e;
+
 #gallery {
     height: 100%;
     display: grid;
@@ -5,7 +8,7 @@
     grid-template-rows: 15% 83% 2%;
     grid-template-areas: 
         "filters filters filters filters"
-        ". p-grid p-grid ."
+        "p-grid p-grid p-grid p-grid"
         ". . . .";
 
     #filters {
@@ -15,9 +18,13 @@
         justify-content: space-between;
         align-items: center;
 
-        #filteredCount {
-            position: relative;
-            left: -20px;
+        #radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .search-bar {
+            margin: 10px;
         }
 
         #typeFilters {
@@ -25,27 +32,85 @@
             flex-direction: row;
             justify-self: center;
             align-items: center;
+
+            #clear-button {
+                width: 100px;
+                height: 56px;
+            }
+
+            .select-type {
+                margin: 8px;
+            }
+
+            .type-box {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5px;
+            }
+
+            .type-control {
+                margin: 1px;
+                width: 300px;
+            }
+
+            .type-label {
+                margin: 8px;
+            }
         }
     }
 
     #poke-container {
         grid-area: p-grid;
+        display: flex;
+        flex-direction: row;
 
-        .poke-grid {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
-            gap: 10px;
-            justify-items: center; 
-            align-items: center;
-            height: 100%;
+        .grid-container {
+            flex: 0 0 100%;
+            display: flex;
 
-            .grid-item {
-                background-color: lightblue;
-                width: 100%;
+            .poke-grid {
+                position: relative;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                gap: 10px;
+                justify-items: center; 
+                align-items: center;
                 height: 100%;
-                text-align: center;
+                width: 85%;
+                max-width: 1000px;
+                margin: 0 auto;
+
+                .grid-item {
+                    background-color: $secondary-color;
+                    width: 100%;
+                    height: 100%;
+                    text-align: center;
+                }
+
+                .card-button {
+                    margin: 0 auto;
+                }
+
+                .poke-card {
+                  min-width: 275px;
+                  max-height: 20vh;
+                  background-color: #f5f6f8ff;
+                }
+
+                .poke-img {
+                    height: 10vh;
+                    width: auto;
+                    margin: 0 auto;
+                    object-fit: contain;
+                    transform: translateY(10px);
+                }
+
+                .poke-label {
+                    color: #616365;
+                    font-size: 14px;
+                    transform: translateY(5px);
+                }
             }
         }
 
@@ -54,7 +119,7 @@
             top: 55%;
             transform: translateY(-50%);
             background: transparent;
-            color: #8b949e;
+            color: $button-color;
             border: none;
             font-size: 2rem;
             padding: 0.5rem 1rem;
@@ -63,7 +128,7 @@
             border-radius: 50%;
 
             &:hover {
-                color: lighten(#8b949e, 20%);
+                color: lighten($button-color, 20%);
             }
 
             &.prev { left: 1rem; }

@@ -11,6 +11,7 @@ import {
   Box,
   ListItemButton
 } from "@mui/material";
+import { Link } from 'react-router-dom';
 
 let IMG_HOME_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
@@ -27,7 +28,7 @@ interface PokedexProps {
 function Pokedex({list, count} : PokedexProps) {
   const pokemonList: Pokemon[] = list;
   const pokemonCount = count;
-  const [currPokemon, setCurr] = useState(1);
+  const [currPokemon, setCurr] = useState<Pokemon>(pokemonList[0]);
   const [searchTerm, setTerm] = useState("");
   const [sortMode, setSortMode] = useState("dex-asc");
 
@@ -42,7 +43,7 @@ function Pokedex({list, count} : PokedexProps) {
   };
 
   const filteredPokemon = pokemonList.filter(
-    (p, index) => p.name.toLowerCase().startsWith(searchTerm.toLowerCase()) || (index + 1).toString().startsWith(searchTerm)
+    (p) => p.name.toLowerCase().startsWith(searchTerm.toLowerCase()) || getDexNum(p).startsWith(searchTerm)
   );
 
   const sortedPokemon = [...filteredPokemon].sort((a, b) => {
@@ -65,8 +66,7 @@ function Pokedex({list, count} : PokedexProps) {
 
   useEffect(() => {
     if (sortedPokemon.length > 0) {
-      const firstId = parseInt(getDexNum(sortedPokemon[0]));
-      setCurr(firstId);
+      setCurr(sortedPokemon[0]);
     }
     // eslint-disable-next-line
   }, [searchTerm, sortMode]);
@@ -75,13 +75,12 @@ function Pokedex({list, count} : PokedexProps) {
     <div id='classic'>
       <div id='filters'>
         <TextField
-          id="poke-search"
+          className="poke-search"
           label="Search for Pokemon"
           type="search"
           variant="filled"
           value={searchTerm}
           onChange={(e) => setTerm(e.target.value)}
-          sx={{ m: 2 }}
         />
         <div id='sort-by'>
           <FormControl>
@@ -105,24 +104,35 @@ function Pokedex({list, count} : PokedexProps) {
       </div>
       <div id='list'>
         <List id="mui-list">
-          {sortedPokemon.map((pokemon, index) => (
+          {sortedPokemon.map((pokemon) => (
             <ListItemButton
-              onClick={() => setCurr(parseInt(getDexNum(pokemon)))}
+              key={pokemon.name}
+              onClick={() => setCurr(pokemon)}
             >
               <ListItemText
                 primary={getDexNum(pokemon)}
               />
               <ListItemText
-                primary={pokemon.name}
+                primary={pokemon.name.toUpperCase()}
               />
             </ListItemButton>
           ))}
         </List>
       </div>
       <div id='poke-image'>
+        <div id='poke-image-label'>
+          <h2>{currPokemon.name.toUpperCase()}</h2>
+        </div>
         <Box id="poke-image-container">
-          <img src={`${IMG_HOME_URL}${currPokemon}.png`} alt="Unavailable Sprite" />
+          <img src={`${IMG_HOME_URL}${parseInt(getDexNum(currPokemon))}.png`} alt="Unavailable Sprite" />
         </Box>
+        <Link to={`/details/${getDexNum(currPokemon)}/`}>
+          <button 
+            id='view-details'
+          >
+            <h3>View Details</h3>
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -3,6 +3,10 @@ import './Gallery.scss';
 import {
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
   Chip,
   FormControl,
   FormControlLabel,
@@ -12,16 +16,23 @@ import {
   Radio,
   RadioGroup,
   Select,
-  TextField
+  TextField,
+  Typography
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Link } from 'react-router-dom';
 
-// let IMG_HOME_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
+let IMG_HOME_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 let TYPE_HOME_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/sword-shield/";
 
 interface Pokemon {
   name: string;
   url: string;
+}
+
+interface PokemonTypeMap {
+  name: string;
+  pokemon: any[];
 }
 
 const pokemonTypes = [
@@ -47,13 +58,17 @@ const pokemonTypes = [
 
 interface PokedexProps {
   list: Pokemon[];
+  typeMap: PokemonTypeMap[];
 }
 
-function Gallery({list} : PokedexProps) {
+function Gallery({list, typeMap} : PokedexProps) {
   const pokemonList: Pokemon[] = list;
+  const pokemonTypeMap: PokemonTypeMap[] = typeMap;
   const [searchTerm, setTerm] = useState("");
   const [sortMode, setSortMode] = useState("dex-asc");
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [currSection, setCurrSection] = useState(0);
+  const pokemonSections: Pokemon[][] = [];
 
   const handleChange = (event: any) => {
     const {
@@ -72,11 +87,24 @@ function Gallery({list} : PokedexProps) {
     return "0000";
   };
 
-  const filteredPokemon = pokemonList.filter(
-    (p, index) => p.name.toLowerCase().startsWith(searchTerm.toLowerCase()) || (index + 1).toString().startsWith(searchTerm)
-  );
+  const filteredPokemon = pokemonList.filter((p) => {
+    const nameMatch =
+      p.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+      getDexNum(p).toString().startsWith(searchTerm);
 
-  // eslint-disable-next-line
+    if (selectedTypes.length === 0) {
+      return nameMatch;
+    }
+
+    const pokemonTypes = pokemonTypeMap
+      .filter((typeGroup) => typeGroup.pokemon.some((poke) => poke.pokemon.name === p.name))
+      .map((t) => t.name);
+
+    const typeMatch = selectedTypes.every((t) => pokemonTypes.includes(t));
+
+    return nameMatch && typeMatch;
+  });
+
   const sortedPokemon = [...filteredPokemon].sort((a, b) => {
     const aDex = parseInt(getDexNum(a));
     const bDex = parseInt(getDexNum(b));
@@ -95,30 +123,30 @@ function Gallery({list} : PokedexProps) {
     }
   });
 
+  for (let i = 0; i < sortedPokemon.length; i += 9) {
+    pokemonSections.push(sortedPokemon.slice(i, i + 9));
+  }
+
   return (
     <div id='gallery'>
       <div id='filters'>
         <TextField
-          id="poke-search"
+          className='search-bar'
           label="Search for Pokemon"
           type="search"
           variant="filled"
           value={searchTerm}
           onChange={(e) => setTerm(e.target.value)}
-          sx={{ m: 2 }}
         />
         <div id='sort-by'>
           <FormControl id="button-group">
             <RadioGroup
+              id='radio-group'
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               defaultValue="dex-asc"
               onChange={(e) => setSortMode(e.target.value)}
               name="row-radio-buttons-group"
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr"
-              }}
             >
               <FormControlLabel value="dex-asc" control={<Radio />} label="Dex Num. ASC" />
               <FormControlLabel value="dex-desc" control={<Radio />} label="Dex Num. DESC" />
@@ -128,47 +156,40 @@ function Gallery({list} : PokedexProps) {
           </FormControl>
         </div>
         <div id='typeFilters'>
-          <Button 
+          <Button
+            id='clear-button' 
             variant="outlined" 
             startIcon={<DeleteIcon />}
-            sx={{
-              width: 100,
-              height: 56
-            }}
             onClick={() => setSelectedTypes([])}
           >
             Reset
           </Button>
-          <FormControl sx={{ m: 1, width: 300 }}>
+          <FormControl className='type-control'>
             <InputLabel 
-              sx={{m: 1}}
+              className="type-label"
             >
               Select Types
             </InputLabel>
             <Select
+              className='select-type'
               multiple
               value={selectedTypes}
               onChange={handleChange}
               input={<OutlinedInput label="Select Types" />}
               renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                <Box className="type-box">
                   {selected.map((type) => (
                     <Chip key={type} label={type} />
                   ))}
                 </Box>
               )}
-              sx={{m: 1}}
             >
               {pokemonTypes.map((type) => (
-                <MenuItem 
+                <MenuItem
                   key={type.id}
                   value={type.name}
-                  sx={{
-                    height: 36,
-                    paddingY: 0.5,
-                  }}
                 >
-                  <img 
+                  <img
                     src={`${TYPE_HOME_URL}${type.id}.png`} 
                     alt={type.name}
                     style={{
@@ -185,19 +206,55 @@ function Gallery({list} : PokedexProps) {
         </div>
       </div>
       <div id='poke-container'>
-        <div className='poke-grid'>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
-          <div className='grid-item'></div>
+        <div className='grid-container'>
+          <div className='poke-grid'>
+            {pokemonSections[currSection]?.map((pokemon) => (
+              <Card
+                className='poke-card'
+                key={pokemon.name}
+              >
+                <CardMedia
+                  component="img"
+                  className='poke-img'
+                  image={`${IMG_HOME_URL}${parseInt(getDexNum(pokemon))}.png`}
+                  title={pokemon.name}
+                />
+                <CardContent>
+                  <Typography gutterBottom className='poke-label'>
+                    {pokemon.name.toUpperCase()}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Link className='card-button' to={`/details/${getDexNum(pokemon)}/`}>
+                    <Button 
+                      size="small"
+                    >
+                      View Details
+                    </Button>
+                  </Link>
+                </CardActions>
+              </Card>
+            ))}
+          </div>
         </div>
-        <button className="gallery-button prev">{"<"}</button>
-        <button className="gallery-button next">{">"}</button>
+        {pokemonSections.length > 1 && <>
+          <button 
+            className="gallery-button prev"
+            onClick={() => setCurrSection((prev) => Math.max(prev - 1, 0))}
+            disabled={currSection === 0}
+          >
+            {"<"}
+          </button>
+          <button 
+            className="gallery-button next"
+            onClick={() =>
+              setCurrSection((prev) => Math.min(prev + 1, pokemonSections.length - 1))
+            }
+            disabled={currSection === pokemonSections.length - 1}
+          >
+            {">"}
+          </button>
+        </>}
       </div>
     </div>
   );

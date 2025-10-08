@@ -1,3 +1,6 @@
+$theme-color: #EF5350;
+$secondary-color: #f0f0f0;
+
 #classic {
     height: 100%;
     display: grid;
@@ -19,12 +22,16 @@
             position: relative;
             left: -20px;
         }
+
+        .poke-search {
+            margin: 10px;
+        }
     }
 
     #list {
         grid-area: list;
         overflow-y: auto;
-        background-color: #f0f0f0;
+        background-color: $secondary-color;
         border-radius: 5px;
 
         #mui-list {
@@ -38,8 +45,30 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: #e8f0ff;
+        gap: 8vh;
         border-radius: 5px;
+
+        #poke-image-label {
+            border: solid $theme-color;
+            box-shadow: 0 0 2px 2px rgba(0, 0, 0, 1);
+            border-width: 0.25rem 0.5rem;
+            padding: 3px 10px;
+            border-radius: 5px;
+        }
+
+        #view-details {
+            padding: 3px 10px;
+            background-color: $theme-color;
+            color: white;
+            border: solid 2px black;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                cursor: pointer;
+                background-color: lighten($theme-color, 10%);
+            }
+        }
 
         #poke-image-container {
             width: 40%;
