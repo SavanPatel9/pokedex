@@ -125,7 +125,7 @@ function Details({list} : PokedexProps) {
                         image={`${IMG_HOME_URL}${pokemon.id}.png`}
                         title={pokemon.name}
                     />
-                    <CardContent>
+                    <CardContent className='mui-card-content'>
                         <div id='card-content'>
                             <div id='stats'>
                                 {pokemon.stats.map((statObj: any) => (

@@ -91,10 +91,10 @@ function Pokedex({list, count} : PokedexProps) {
               onChange={(e) => setSortMode(e.target.value)}
               name="row-radio-buttons-group"
             >
-              <FormControlLabel value="dex-asc" control={<Radio />} label="Dex Num. ASC" />
-              <FormControlLabel value="dex-desc" control={<Radio />} label="Dex Num. DESC" />
-              <FormControlLabel value="name-asc" control={<Radio />} label="Name ASC" />
-              <FormControlLabel value="name-desc" control={<Radio />} label="Name DESC" />
+              <FormControlLabel className='mui-radio' value="dex-asc" control={<Radio />} label="Dex Num. ASC" />
+              <FormControlLabel className='mui-radio' value="dex-desc" control={<Radio />} label="Dex Num. DESC" />
+              <FormControlLabel className='mui-radio' value="name-asc" control={<Radio />} label="Name ASC" />
+              <FormControlLabel className='mui-radio' value="name-desc" control={<Radio />} label="Name DESC" />
             </RadioGroup>
           </FormControl>
         </div>

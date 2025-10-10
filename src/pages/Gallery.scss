@@ -21,6 +21,10 @@ $button-color: #8b949e;
         #radio-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
+
+            .mui-radio .MuiFormControlLabel-label {
+                font-size: 2vh;
+            }
         }
 
         .search-bar {
@@ -90,26 +94,30 @@ $button-color: #8b949e;
 
                 .card-button {
                     margin: 0 auto;
+                    transform: translateY(-2.5vh);
                 }
 
                 .poke-card {
-                  min-width: 275px;
-                  max-height: 20vh;
-                  background-color: #f5f6f8ff;
+                    width: 80%;
+                    height: 20vh;
+                    background-color: #f5f6f8ff;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
                 }
 
                 .poke-img {
-                    height: 10vh;
+                    height: 8vh;
                     width: auto;
                     margin: 0 auto;
                     object-fit: contain;
-                    transform: translateY(10px);
+                    transform: translateY(1vh);
                 }
 
                 .poke-label {
                     color: #616365;
-                    font-size: 14px;
-                    transform: translateY(5px);
+                    font-size: 2vh;
+                    transform: translateY(0.5vh);
                 }
             }
         }
